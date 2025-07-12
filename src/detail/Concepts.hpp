@@ -1,0 +1,17 @@
+#pragma once
+
+#include "Annotations.hpp"
+
+#include <concepts>
+
+namespace jscheme::concepts {
+
+template<typename Candidate>
+concept String = std::same_as<Candidate, std::string> || std::same_as<Candidate, std::string_view>;
+
+template<typename Candidate>
+concept CustomType = [] consteval -> bool {
+    return detail::get_unique_optional_annotation(^^Candidate, ^^detail::CustomType).has_value();
+}();
+
+}
