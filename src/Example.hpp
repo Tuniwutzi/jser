@@ -3,6 +3,7 @@
 #include "Annotations.hpp"
 #include "ObjectSerializationContext.hpp"
 
+#include <stdexcept>
 #include <string>
 #include <cstdint>
 
@@ -30,8 +31,19 @@ struct [[=jscheme::custom_type<>()]] Name {
     std::string last_name;
 
     static constexpr std::string serialize(const Name& value) {
-        // return std::format("{} {}", value.first_name, value.last_name);
         return value.first_name + " " + value.last_name;
+    }
+
+    static constexpr Name deserialize(const std::string& raw) {
+        auto pos = raw.find(' ');
+        if (pos == std::string::npos) {
+            throw std::runtime_error{"Invalid name"};
+        }
+
+        return {
+            .first_name { raw.substr(0, pos) },
+            .last_name { raw.substr(pos + 1) },
+        };
     }
 };
 

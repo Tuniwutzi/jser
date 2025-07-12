@@ -2,11 +2,14 @@
 #include <meta>
 #include <iostream>
 #include <charconv>
+#include <string>
 
+#include "DeserializeBasic.hpp"
 #include "Example.hpp"
 // #include "Generator.hpp"
 // #include "Serialization.hpp"
 #include "Serialize.hpp"
+#include "Deserialize.hpp"
 
 // namespace detail {
 
@@ -40,7 +43,7 @@
 
 // }
 
-int main() {
+void test_serialization() {
     static constexpr auto serializedCT = std::define_static_string(jscheme::serialize(Person{
         .address {
             .area {
@@ -67,6 +70,33 @@ int main() {
         std::cerr << serializedRT << std::endl;
         std::cerr << expectedRT << std::endl;
     }
+}
+
+void test_deserialization() {
+    static constexpr std::string_view json_string = "\"\\\"\\\\ hey!\"";
+    static constexpr std::string_view json_broken_string = "\"hey!";
+
+    static constexpr auto str = jscheme::deserialize<std::string>(json_string);
+    static_assert(str == "\"\\ hey!");
+
+    try {
+        auto _ = jscheme::deserialize<std::string>(json_broken_string);
+        std::cerr << "Should get error on broken string" << std::endl;
+    } catch (...) {
+    }
+
+    static constexpr std::string_view json_int = "123";
+    static constexpr auto intval = jscheme::deserialize<int>(json_int);
+    static_assert(intval == 123);
+
+    static constexpr std::string_view json_name = "\"FirstName LastName\"";
+    static constexpr auto name = jscheme::deserialize<Name>(json_name);
+    static_assert(name.first_name == "FirstName" && name.last_name == "LastName");
+}
+
+int main() {
+    test_serialization();
+    test_deserialization();
 
     return 0;
 }

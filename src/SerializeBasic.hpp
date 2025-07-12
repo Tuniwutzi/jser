@@ -2,7 +2,7 @@
 
 #include "Annotations.hpp"
 #include "detail/Helpers.hpp"
-#include "detail/Concepts.hpp"
+#include "Concepts.hpp"
 
 #include <algorithm>
 #include <concepts>
