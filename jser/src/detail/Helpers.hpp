@@ -4,6 +4,11 @@
 
 namespace jser::detail {
 
+template<typename T>
+struct ObjectInfo {
+    static constexpr auto fields = std::define_static_array(nonstatic_data_members_of(^^T, std::meta::access_context::unchecked()));
+};
+
 constexpr void write(char c, auto& iterator) {
     *iterator = c;
     ++iterator;

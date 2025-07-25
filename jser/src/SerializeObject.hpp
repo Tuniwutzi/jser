@@ -54,7 +54,7 @@ namespace detail {
 template<typename T, typename Out>
 constexpr void serialize_fields(const T& value, ObjectSerializationContext<Out>& context) {
     template for (constexpr auto member:
-                  std::define_static_array(nonstatic_data_members_of(^^T, std::meta::access_context::unchecked()))) {
+                  detail::ObjectInfo<T>::fields) {
         constexpr auto custom_serializer = get_custom_field_serializer(member);
         if constexpr (custom_serializer) {
             [:*custom_serializer:]::serialize(value.[:member:], context);
