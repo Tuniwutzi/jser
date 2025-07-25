@@ -3,7 +3,7 @@
 #include "DeserializeBasic.hpp"
 #include "DeserializeCustomType.hpp"
 
-namespace jscheme {
+namespace jser {
 
 template<typename T, typename Range>
 constexpr T deserialize(const Range& range) {

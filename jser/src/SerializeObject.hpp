@@ -2,7 +2,7 @@
 
 #include "ObjectSerializationContext.hpp"
 
-namespace jscheme {
+namespace jser {
 
 namespace detail {
 

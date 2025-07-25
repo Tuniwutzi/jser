@@ -4,7 +4,7 @@
 #include <string_view>
 #include <meta>
 
-namespace jscheme {
+namespace jser {
 
 class CTException : public std::exception {
 public:

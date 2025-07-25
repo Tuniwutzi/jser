@@ -13,7 +13,7 @@
 #include <meta>
 #include <string_view>
 
-namespace jscheme {
+namespace jser {
 
 namespace detail {
 

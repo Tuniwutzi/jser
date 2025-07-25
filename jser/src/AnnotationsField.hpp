@@ -12,7 +12,7 @@ the object context is always the one of the enclosing object
 
 (maybe custom_field is not a good name, what's actually custom is the serialization of the data member)
 */
-namespace jscheme {
+namespace jser {
 
 namespace detail {
 

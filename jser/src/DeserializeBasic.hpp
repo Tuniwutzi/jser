@@ -11,7 +11,7 @@
 #include <span>
 #include <charconv>
 
-namespace jscheme {
+namespace jser {
 
 template<std::integral T, std::contiguous_iterator Iterator, std::sized_sentinel_for<Iterator> Sentinel>
 requires (!std::same_as<T, bool>)

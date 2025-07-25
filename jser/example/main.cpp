@@ -11,7 +11,7 @@
 
 struct AreaSerializer;
 
-struct [[=jscheme::custom_type<AreaSerializer>()]] Area {
+struct [[=jser::custom_type<AreaSerializer>()]] Area {
     std::string post_number;
     std::string city;
 };
@@ -28,7 +28,7 @@ struct Address {
     Area area;
 };
 
-struct [[=jscheme::custom_type<>()]] Name {
+struct [[=jser::custom_type<>()]] Name {
     std::string first_name;
     std::string last_name;
 
@@ -54,7 +54,7 @@ struct PhoneNumber {
     std::string number;
 
     template<typename Iterator>
-    static constexpr void serialize(const PhoneNumber& value, jscheme::ObjectSerializationContext<Iterator>& context) {
+    static constexpr void serialize(const PhoneNumber& value, jser::ObjectSerializationContext<Iterator>& context) {
         context.add_object_field("PhoneNumber", [&](auto& context) constexpr {
             context.add_field("CountryCode", value.country_code);
             context.add_field("Number", value.number);
@@ -63,16 +63,16 @@ struct PhoneNumber {
 };
 
 struct Person {
-    [[=jscheme::name("$test")]] Name name;
+    [[=jser::name("$test")]] Name name;
     std::uint8_t age;
-    [[=jscheme::embed(true)]] Address address;
+    [[=jser::embed(true)]] Address address;
 
-    [[=jscheme::custom_field<PhoneNumber>()]] PhoneNumber phone_number;
+    [[=jser::custom_field<PhoneNumber>()]] PhoneNumber phone_number;
 };
 
 
 void test_serialization() {
-    static constexpr auto serializedCT = std::define_static_string(jscheme::serialize(Person{
+    static constexpr auto serializedCT = std::define_static_string(jser::serialize(Person{
         .address {
             .area {
                 .post_number = "12345",
@@ -91,7 +91,7 @@ void test_serialization() {
         std::cerr << expectedCT << std::endl;
     }
 
-    auto serializedRT = jscheme::serialize(*new Person{{"fn", "ln"}, 17});
+    auto serializedRT = jser::serialize(*new Person{{"fn", "ln"}, 17});
     static constexpr std::string_view expectedRT = "{\"$test\":\"fn ln\",\"age\":17,\"street\":\"\",\"number\":\"\",\"area\":\" \",\"PhoneNumber\":{\"CountryCode\":\"\",\"Number\":\"\"}}";
     if (serializedRT != expectedRT) {
         std::cerr << "Mismatch for runtime serialization:" << std::endl;
@@ -104,21 +104,21 @@ void test_deserialization() {
     static constexpr std::string_view json_string = "\"\\\"\\\\ hey!\"";
     static constexpr std::string_view json_broken_string = "\"hey!";
 
-    static constexpr auto str = jscheme::deserialize<std::string>(json_string);
+    static constexpr auto str = jser::deserialize<std::string>(json_string);
     static_assert(str == "\"\\ hey!");
 
     try {
-        auto _ = jscheme::deserialize<std::string>(json_broken_string);
+        auto _ = jser::deserialize<std::string>(json_broken_string);
         std::cerr << "Should get error on broken string" << std::endl;
     } catch (...) {
     }
 
     static constexpr std::string_view json_int = "123";
-    static constexpr auto intval = jscheme::deserialize<int>(json_int);
+    static constexpr auto intval = jser::deserialize<int>(json_int);
     static_assert(intval == 123);
 
     static constexpr std::string_view json_name = "\"FirstName LastName\"";
-    static constexpr auto name = jscheme::deserialize<Name>(json_name);
+    static constexpr auto name = jser::deserialize<Name>(json_name);
     static_assert(name.first_name == "FirstName" && name.last_name == "LastName");
 }
 

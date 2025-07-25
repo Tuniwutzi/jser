@@ -7,7 +7,7 @@
 #include <optional>
 #include <ranges>
 
-namespace jscheme::detail {
+namespace jser::detail {
 
 consteval std::vector<std::meta::info> get_annotations(std::meta::info annotatable, std::meta::info annotation_kind) {
     return std::ranges::to<std::vector>(annotations_of(annotatable) | std::views::filter([&](auto annotation) consteval {

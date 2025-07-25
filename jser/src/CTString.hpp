@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <string_view>
 
-namespace jscheme::detail {
+namespace jser::detail {
 
 template<size_t capacity>
 struct CTString: std::array<char, capacity> {

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace jscheme {
+namespace jser {
 
 namespace detail {
 

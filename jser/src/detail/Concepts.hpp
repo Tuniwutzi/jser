@@ -4,7 +4,7 @@
 
 #include <concepts>
 
-namespace jscheme::concepts {
+namespace jser::concepts {
 
 template<typename Candidate>
 concept String = std::same_as<Candidate, std::string> || std::same_as<Candidate, std::string_view>;

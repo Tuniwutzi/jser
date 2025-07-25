@@ -3,7 +3,7 @@
 #include "Concepts.hpp"
 #include <iterator>
 
-namespace jscheme {
+namespace jser {
 
 namespace detail {
 

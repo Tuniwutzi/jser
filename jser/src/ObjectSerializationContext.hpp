@@ -5,7 +5,7 @@
 
 #include <string_view>
 
-namespace jscheme {
+namespace jser {
 
 template<typename Iterator>
 class ObjectSerializationContext {

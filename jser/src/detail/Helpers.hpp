@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-namespace jscheme::detail {
+namespace jser::detail {
 
 constexpr void write(char c, auto& iterator) {
     *iterator = c;
