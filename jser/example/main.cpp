@@ -1,47 +1,75 @@
 #include <print>
 #include <meta>
 #include <iostream>
-#include <charconv>
 #include <string>
 
 #include "DeserializeBasic.hpp"
-#include "Example.hpp"
-// #include "Generator.hpp"
-// #include "Serialization.hpp"
 #include "Serialize.hpp"
 #include "Deserialize.hpp"
 
-// namespace detail {
 
-// consteval auto generate_member_specs(std::string_view scheme) {
-//     return std::array {
-//         data_member_spec(^^int, {.name = "testi"}),
-//     };
-// }
 
-// }
+struct AreaSerializer;
 
-// template<std::meta::info Scheme>
-// consteval auto generate_parser() {
-//     // Subject for a reddit post?
-//     // This MUST be static constexpr, otherwise the consteval block complains that "specs must be captured"
-//     // I _THINK_ this is actually a shortcoming of the spec of consteval blocks, because IIRC they're defined as basically:
-//     // static_assert([] consteval { <content of block> }(), true);
-//     // IE: everything is just put into a lambda and executed in static_assert context.
-//     // So of course a variable in the surrounding scope can't be used without capturing...
-//     static constexpr std::array specs{detail::generate_member_specs([:Scheme:])};
+struct [[=jscheme::custom_type<AreaSerializer>()]] Area {
+    std::string post_number;
+    std::string city;
+};
 
-//     struct S;
-//     consteval {
-//         std::meta::define_aggregate(^^S, specs);
-//     }
+struct AreaSerializer {
+    static constexpr std::string serialize(const Area& area) {
+        return area.post_number + " " + area.city;
+    }
+};
 
-//     return [](std::string_view) -> S {
-//         std::println("Parser for: {}", [:Scheme:]);
-//         return {};
-//     };
+struct Address {
+    std::string street;
+    std::string number;
+    Area area;
+};
 
-// }
+struct [[=jscheme::custom_type<>()]] Name {
+    std::string first_name;
+    std::string last_name;
+
+    static constexpr std::string serialize(const Name& value) {
+        return value.first_name + " " + value.last_name;
+    }
+
+    static constexpr Name deserialize(const std::string& raw) {
+        auto pos = raw.find(' ');
+        if (pos == std::string::npos) {
+            throw std::runtime_error{"Invalid name"};
+        }
+
+        return {
+            .first_name { raw.substr(0, pos) },
+            .last_name { raw.substr(pos + 1) },
+        };
+    }
+};
+
+struct PhoneNumber {
+    std::string country_code;
+    std::string number;
+
+    template<typename Iterator>
+    static constexpr void serialize(const PhoneNumber& value, jscheme::ObjectSerializationContext<Iterator>& context) {
+        context.add_object_field("PhoneNumber", [&](auto& context) constexpr {
+            context.add_field("CountryCode", value.country_code);
+            context.add_field("Number", value.number);
+        });
+    }
+};
+
+struct Person {
+    [[=jscheme::name("$test")]] Name name;
+    std::uint8_t age;
+    [[=jscheme::embed(true)]] Address address;
+
+    [[=jscheme::custom_field<PhoneNumber>()]] PhoneNumber phone_number;
+};
+
 
 void test_serialization() {
     static constexpr auto serializedCT = std::define_static_string(jscheme::serialize(Person{
