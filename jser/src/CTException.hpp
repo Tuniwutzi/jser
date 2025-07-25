@@ -9,9 +9,14 @@ namespace jser {
 class CTException : public std::exception {
 public:
     template<size_t N>
-    consteval CTException(const char(&message)[N])
-    :_message{std::define_static_string(message)}
+    constexpr CTException(const char(&message)[N])
+    // :_message{std::define_static_string(message)}
     {
+        if consteval {
+            _message = std::define_static_string(message);
+        } else {
+            _message = message;
+        }
     }
 
     constexpr const char* what() const noexcept override {
