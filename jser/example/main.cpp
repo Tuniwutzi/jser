@@ -119,6 +119,13 @@ void test_deserialization() {
     static constexpr std::string_view json_name = "\"FirstName LastName\"";
     static constexpr auto name = jser::deserialize<Name>(json_name);
     static_assert(name.first_name == "FirstName" && name.last_name == "LastName");
+
+    // TODO: this is a bad example, because phone number should have custom serialization/deserialization
+    // The only reason this works right now is that custom deserialization isn't implemented yet.
+    static constexpr std::string_view json_person = "{\"country_code\": \"+48\", \"number\":\"9876\"}";
+    static constexpr auto phone_number = jser::deserialize<PhoneNumber>(json_person);
+    static_assert(phone_number.country_code == "+48");
+    static_assert(phone_number.number == "9876");
 }
 
 int main() {

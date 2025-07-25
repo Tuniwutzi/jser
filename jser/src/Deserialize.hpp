@@ -2,6 +2,7 @@
 
 #include "DeserializeBasic.hpp"
 #include "DeserializeCustomType.hpp"
+#include "DeserializeObject.hpp"
 
 namespace jser {
 
