@@ -14,5 +14,10 @@ constexpr T deserialize(const Range& range) {
     }
     return std::move(value);
 }
+template<typename T, size_t N>
+constexpr T deserialize(const char(&literal)[N]) {
+    auto end = literal[N-1] == 0 ? (literal + N - 1) : literal + N;
+    return deserialize<T>(std::span { literal, end });
+}
 
 }
