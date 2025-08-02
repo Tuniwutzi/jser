@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ObjectDeserializationContext.hpp"
+#include "detail/Helpers.hpp"
 
 #include <meta>
 
