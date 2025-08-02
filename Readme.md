@@ -2,9 +2,14 @@
 
 - Fully custom (de)serialization with iterators
     - Use-case: big number class, which can handle arbitrarily large integers or even floats. This can NOT be implemented with custom serializer that's expected to just translate things into types with builtin support
-- Custom (de)serialization from/to object and array without having to create temporary values.
+- (MAYBE OBSOLETE, see smart deserialization further down) Custom (de)serialization from/to object and array without having to create temporary values.
     - IE: I don't want to have to create a `vector<int>` to then pass it to my custom `constexpr static Foo deserialize(const vector<int>&)`. Rather, I'd like to instead expect some sort of adapter that I can read the values out of on the fly: `constexpr static Foo deserialize(jser::ArrayDeserializationContext& ctx)`. I can then do `ctx.next<int>()` etc to deserialize the next value. Same thing for objects, for which I already have `ObjectSerializationContext`, but the optimization is not yet supported for custom deserialization.
     - Same thing for serialize: `class Foo { constexpr vector<int> serialize(); };` is bad; we're creating a vector, then jser serializes it. Blergh. Better: `class Foo { constexpr void serialize(ArraySerializationContext& ctx); }`, with `ctx.append(<...>)` to write values right into the output!
+- Support for tuple as json array
+- Support for variant as single element of dynamic type
+- Support for smart custom deserialization: if I create `Person deserialize(string name, int [[=jser::name("age_years")]] age)`, then jser should try to parse one string field with key "name" and one int field with key "age_years", then pass those values to deserialize to get the Person. This is proper reflection usage for deserialization! Use the parameter types and names for smart behavior!!! This (along with smart deserialization for arrays) might make the deserialization contexts obsolete!
+    - Similar stuff for deserializing from arrays
+- Come up with what smart serialization might look like because I don't know yet.
 
 # Design considerations
 

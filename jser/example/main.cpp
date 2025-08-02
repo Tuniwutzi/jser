@@ -66,6 +66,9 @@ struct Person {
     std::uint8_t age;
     [[=jser::embed(true)]] Address address;
 
+    // Pretty terrible example, because this would be bad practice
+    // It's very confusing to give PhoneNumber the customization for this field
+    // Because the PhoneNumber type itself is actually not customized at all, it's just this field!
     [[=jser::custom_field<PhoneNumber>()]] PhoneNumber phone_number;
 };
 

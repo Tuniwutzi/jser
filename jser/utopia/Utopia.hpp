@@ -5,6 +5,7 @@
  * As in: how should code that uses jser look like.
  */
 
+#include "ObjectSerializationContext.hpp"
 #include "crazy_formatters/FormatterConcepts.hpp"
 #include <jser/Annotations.hpp>
 
@@ -194,6 +195,45 @@ struct Person {
     std::string name;
     std::chrono::system_clock::time_point birthday;
     [[=jser::omit_if_empty(/*omit = true*/)]] std::optional<std::chrono::system_clock::time_point> deathday;
+};
+
+/*
+JSON:
+{
+"full_plate": "COE ASD 420",
+"red": 0,
+"blue": 255,
+"green": 0
+}
+The parameter names and types determine the expectation.
+custom_from_object might not even be necessary, we'll see.
+*/
+[[=jser::custom_from_object()]] constexpr LicensePlate custom_deserialize(std::string [[=jser::name("full_plate")]] plate, uint8_t red, uint8_t green, uint8_t blue) {
+}
+
+// Alternatively: ["COE ASD 420", 0, 255, 0]
+// Notably, these 2 functions must not exist at the same time, otherwise "can't take reflection of overload set"
+[[=jser::custom_from_array()]] constexpr LicensePlate custom_deserialize(std::string plate, uint8_t red, uint8_t green, uint8_t blue);
+
+constexpr void custom_serialize(const LicensePlate& plate, jser::ObjectSerializationContext& ctx);
+constexpr void custom_serialize(const LicensePlate& plate, jser::ArraySerializationContext& ctx);
+// Or, with temporary objects (less performant):
+constexpr std::unordered_map<std::string, std::variant<std::string, uint8_t>> custom_serialize(const LicensePlate&);
+constexpr std::tuple<std::string, uint8_t, uint8_t, uint8_t> custom_serialize(const LicensePlate&);
+
+// Nice idea in principle, but:
+// 1st: the annotation makes it so that we need a forward decl of the struct. (need the struct to declare the functions, need the functions to declare the struct with the annotation)
+// 2nd: we'll keep running into "reflection of overload set" issues with this probably. Would be nice to have the feature that the user can decide whether to deserialize from array or object, either can work.
+// that's impossible with this. Also, name clashes. Users will have to keep creating little namespaces or classes namespace license_plate_serialization { ... } to keep things unambiguous
+struct [[=jser::custom(^^custom_serialize, ^^custom_deserialize)]] LicensePlate {
+    std::string area;
+    std::string letters;
+    uint16_t numbers;
+    bool yellow;
+};
+
+struct Car {
+    LicensePlate license_plate;
 };
 
 }
