@@ -34,3 +34,18 @@ TEMPLATE_LIST_TEST_CASE("Deserialize integral failure", "[deserialize][failure]"
     REQUIRE_THROWS(jser::deserialize<TestType>("1,5"));
     REQUIRE_THROWS(jser::deserialize<TestType>("1.5"));
 }
+
+TEST_CASE("Deserialize bool success", "[deserialize][success]") {
+    static_assert(jser::deserialize<bool>("true"));
+    static_assert(!jser::deserialize<bool>("false"));
+    REQUIRE(jser::deserialize<bool>("true"));
+    REQUIRE(!jser::deserialize<bool>("false"));
+}
+
+TEST_CASE("Deserialize bool failure", "[deserialize][failure]") {
+    REQUIRE_THROWS(jser::deserialize<bool>(""));
+    REQUIRE_THROWS(jser::deserialize<bool>(" true"));
+    REQUIRE_THROWS(!jser::deserialize<bool>("alse"));
+    REQUIRE_THROWS(!jser::deserialize<bool>("flse"));
+    REQUIRE_THROWS(!jser::deserialize<bool>("fals"));
+}

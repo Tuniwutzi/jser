@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iterator>
 #include <memory>
+#include <stdexcept>
 #include <utility>
 #include <concepts>
 #include <span>
@@ -22,6 +23,44 @@ constexpr std::pair<T, Iterator> deserialize(Iterator begin, Sentinel end) {
     } else {
         throw std::system_error{std::make_error_code(result.ec), "Could not parse integer from characters"};
     }
+}
+
+template<std::same_as<bool> T, typename Iterator, std::sized_sentinel_for<Iterator> Sentinel>
+constexpr std::pair<bool, Iterator> deserialize(Iterator begin, Sentinel end) {
+    if (begin == end) {
+        throw std::runtime_error{"Too few bytes to deserialize a boolean"};
+    }
+
+    bool result;
+    std::string_view expectation;
+    switch (*begin) {
+        case 't':
+        result = true;
+        expectation = "rue";
+        break;
+        case 'f':
+        result = false;
+        expectation = "alse";
+        break;
+        default:
+        throw std::runtime_error{"Invalid character found in boolean"};
+    }
+    ++begin;
+
+    for (auto c: expectation) {
+        if (begin == end) {
+            throw std::runtime_error{"Too few bytes to deserialize a boolean"};
+        }
+
+        if (*begin != c) {
+            throw std::runtime_error{std::format("Unexpected character {} in boolean", *begin)};
+        }
+
+        ++begin;
+    }
+
+
+    return {result, begin};
 }
 
 template<std::same_as<std::string> T, typename Iterator, std::sentinel_for<Iterator> Sentinel>
