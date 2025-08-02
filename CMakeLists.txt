@@ -40,6 +40,8 @@ target_link_options(
     "-Wl,-rpath,${path}/lib"
 )
 
+add_subdirectory(jser/tests)
+
 add_executable(
     jser_example
     jser/example/main.cpp
