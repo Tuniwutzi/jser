@@ -47,6 +47,14 @@ constexpr auto read(auto begin, auto end) {
     return std::pair{result, begin};
 }
 
+constexpr auto write(bool value, auto out) {
+    if (value) {
+        return std::ranges::copy(std::string_view{"true"}, out).out;
+    } else {
+        return std::ranges::copy(std::string_view{"false"}, out).out;
+    }
+}
+
     
 template<std::integral T>
 requires(!std::same_as<T, bool>)

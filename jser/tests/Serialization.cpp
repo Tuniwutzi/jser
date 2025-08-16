@@ -11,3 +11,9 @@ TEMPLATE_LIST_TEST_CASE("Serialize integral success", "[serialize][success]", In
     std::string integral = jser::serialize<TestType>(106);
     REQUIRE(integral == "106");
 }
+
+TEST_CASE("Serialize bool success", "[serialize][success]") {
+    static_assert(jser::serialize(true) == "true");
+    std::string value = jser::serialize<bool>(false);
+    REQUIRE(value == "false");
+}
