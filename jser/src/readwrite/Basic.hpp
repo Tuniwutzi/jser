@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <concepts>
 #include <iterator>
 #include <stdexcept>
@@ -43,7 +44,6 @@ constexpr auto read(auto begin, auto end) {
         ++begin;
     }
 
-
     return std::pair{result, begin};
 }
 
@@ -56,6 +56,22 @@ constexpr auto read(auto begin, auto end) {
         return std::pair{rv, begin + (result.ptr - std::to_address(begin))};
     } else {
         throw std::system_error{std::make_error_code(result.ec), "Could not parse integer from characters"};
+    }
+}
+
+template<std::integral T>
+requires (!std::same_as<T, bool>)
+constexpr auto write(T value, auto iterator) {
+    if consteval {
+        std::array<char, 512> buffer;
+        auto result = std::to_chars(std::to_address(buffer.begin()), std::to_address(buffer.end()), value, 10);
+        if (result) {
+            return std::copy(buffer.data(), result.ptr, iterator);
+        } else {
+            throw std::runtime_error{"Could not stringify value at compile time"};
+        }
+    } else {
+        return std::format_to(iterator, "{}", value);
     }
 }
 
