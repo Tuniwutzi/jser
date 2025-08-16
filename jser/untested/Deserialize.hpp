@@ -1,17 +1,10 @@
 #pragma once
 
-#include "ReadBasic.hpp"
-
-#include <iterator>
-#include <span>
+#include "DeserializeBasic.hpp"
+#include "DeserializeCustomType.hpp"
+#include "DeserializeObject.hpp"
 
 namespace jser {
-
-template<typename T, typename Iterator, std::sized_sentinel_for<Iterator> Sentinel>
-constexpr std::pair<T, Iterator> deserialize(Iterator begin, Sentinel end) {
-    return Traits<T>::read(begin, end);
-}
-
 
 template<typename T, typename Range>
 constexpr T deserialize(const Range& range) {
@@ -21,7 +14,6 @@ constexpr T deserialize(const Range& range) {
     }
     return std::move(value);
 }
-
 template<typename T, size_t N>
 constexpr T deserialize(const char(&literal)[N]) {
     auto end = literal[N-1] == 0 ? (literal + N - 1) : literal + N;

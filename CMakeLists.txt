@@ -42,13 +42,13 @@ target_link_options(
 
 add_subdirectory(jser/tests)
 
-add_executable(
-    jser_example
-    jser/example/main.cpp
-)
+# add_executable(
+#     jser_example
+#     jser/example/main.cpp
+# )
 
-target_link_libraries(
-    jser_example
-    PUBLIC
-    jser
-)
+# target_link_libraries(
+#     jser_example
+#     PUBLIC
+#     jser
+# )
