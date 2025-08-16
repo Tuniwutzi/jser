@@ -17,3 +17,9 @@ TEST_CASE("Serialize bool success", "[serialize][success]") {
     std::string value = jser::serialize<bool>(false);
     REQUIRE(value == "false");
 }
+
+TEST_CASE("Serialize string success", "[serialize][success]") {
+    static_assert(jser::serialize("foo") == "\"foo\"");
+    std::string value = jser::serialize("bar");
+    REQUIRE(value == "\"bar\"");
+}

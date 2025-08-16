@@ -126,4 +126,24 @@ constexpr auto read(auto begin, auto end) {
     throw std::runtime_error{"Data ended before string end"};
 }
 
+template<typename Stringlike>
+requires(std::same_as<Stringlike, std::string> || std::same_as<Stringlike, std::string_view>)
+constexpr auto write(const Stringlike& value, auto out) {
+    *out = '"';
+    ++out;
+    out = std::ranges::copy(value, out).out;
+    *out = '"';
+    ++out;
+    return out;
+}
+
+template<size_t N>
+constexpr auto write(const char(&value)[N], auto out) {
+    if (value[N-1] != 0) {
+        return write(std::string_view{value, N-1}, out);
+    } else {
+        return write(std::string_view{value}, out);
+    }
+}
+
 }
