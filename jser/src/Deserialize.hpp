@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ReadBasic.hpp"
+#include "readwrite/Basic.hpp"
 
 #include <iterator>
 #include <span>
@@ -9,7 +9,7 @@ namespace jser {
 
 template<typename T, typename Iterator, std::sized_sentinel_for<Iterator> Sentinel>
 constexpr std::pair<T, Iterator> deserialize(Iterator begin, Sentinel end) {
-    return Traits<T>::read(begin, end);
+    return readwrite::read<T>(begin, end);
 }
 
 
