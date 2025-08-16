@@ -1,3 +1,20 @@
+# Steps to be done next in order
+
+- [ ] (De)serialization of lists as range
+- [ ] (De)serialization of objects via uncustomizable reflection of structs
+- [ ] Maybe deserialize_invoke, as preparation for (de)composition?
+    - Simple, uncustomizable rules for now: single parameter = deserialize the type of the parameter. Multiple parameters = deserialize object with the corresponding fields.
+- [ ] Customization by (de)composition
+- [ ] (De)serialization of variants of basic types
+    - This will need a way for ANY deserializable type to be able to tell what kind of json-type is expected. For types with their own readers, the readers themselves will provide that information somehow. For composable types the information can be inferred by reducing them down to object, array, or readable type.
+    - A type may have multiple json-types (ie: `variant<string, int>` has 2)
+    - Only unambiguous variants are supported; if 2 elements have an overlap in json types we get a compiletime error
+- [ ] jser::Any, which can hold any json object (`struct Any: std::variant<int, bool, string, vector<Any>, map<string, Any>> {...};`, with custom (de)composition from/into the underlying variant)
+
+# Steps at some point in the future
+
+- [ ] Support heterogenous lists as tuples
+
 # Desired Features
 
 - Fully custom (de)serialization with iterators
