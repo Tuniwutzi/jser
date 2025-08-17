@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Helpers.hpp"
+
 #include <array>
 #include <concepts>
 #include <iterator>
@@ -83,6 +85,8 @@ constexpr auto write(T value, auto iterator) {
     }
 }
 
+// Only std::string for now
+// But with contiguous iterators, we could deserialize into a string_view referencing the data in place
 template<std::same_as<std::string>>
 constexpr auto read(auto begin, auto end) {
     if (begin == end) {
@@ -126,9 +130,8 @@ constexpr auto read(auto begin, auto end) {
     throw std::runtime_error{"Data ended before string end"};
 }
 
-template<typename Stringlike>
-requires(std::same_as<Stringlike, std::string> || std::same_as<Stringlike, std::string_view>)
-constexpr auto write(const Stringlike& value, auto out) {
+template<detail::concepts::String S>
+constexpr auto write(const S& value, auto out) {
     *out = '"';
     ++out;
     out = std::ranges::copy(value, out).out;

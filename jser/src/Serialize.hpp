@@ -1,6 +1,7 @@
 #pragma once
 
 #include "readwrite/Basic.hpp"
+#include "readwrite/Range.hpp"
 
 #include <string>
 

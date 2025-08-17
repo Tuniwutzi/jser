@@ -23,3 +23,8 @@ TEST_CASE("Serialize string", "[serialize]") {
     std::string value = jser::serialize("bar");
     REQUIRE(value == "\"bar\"");
 }
+
+TEST_CASE("Serialize ranges", "[serialize]") {
+    static_assert(jser::serialize(std::array{true, false}) == "[true,false]");
+    static_assert(jser::serialize(std::array<bool, 0>{}) == "[]");
+}

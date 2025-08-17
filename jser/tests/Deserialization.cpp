@@ -49,3 +49,28 @@ TEST_CASE("Deserialize bool failure", "[deserialize][failure]") {
     REQUIRE_THROWS(!jser::deserialize<bool>("flse"));
     REQUIRE_THROWS(!jser::deserialize<bool>("fals"));
 }
+
+TEST_CASE("Deserialize range success", "[deserialize][success]") {
+    static_assert(jser::deserialize<std::vector<bool>>("[true, false, true]") == std::vector {true, false, true});
+    static_assert(jser::deserialize<std::vector<int>>("[1,5,9]") == std::vector{1, 5, 9});
+    static_assert(jser::deserialize<std::vector<std::string>>("[]") == std::vector<std::string>{});
+}
+
+TEST_CASE("Deserialize range failure", "[deserialize][failure]") {
+    // Broken element
+    REQUIRE_THROWS(jser::deserialize<std::vector<bool>>("[true, false, tru]"));
+
+    // Unterminated
+    REQUIRE_THROWS(jser::deserialize<std::vector<bool>>("[true"));
+
+    // Missing opening [
+    REQUIRE_THROWS(jser::deserialize<std::vector<bool>>("true]"));
+
+    // Missing ,
+    REQUIRE_THROWS(jser::deserialize<std::vector<bool>>("[true false]"));
+
+    // Extraneous ,
+    REQUIRE_THROWS(jser::deserialize<std::vector<bool>>("[true, false,]"));
+
+    REQUIRE_THROWS(jser::deserialize<std::vector<bool>>(""));
+}
