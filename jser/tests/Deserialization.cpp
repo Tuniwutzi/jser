@@ -74,3 +74,29 @@ TEST_CASE("Deserialize range failure", "[deserialize][failure]") {
 
     REQUIRE_THROWS(jser::deserialize<std::vector<bool>>(""));
 }
+
+namespace {
+
+struct Foo {
+    int age;
+    std::string name;
+    friend constexpr bool operator==(const Foo&, const Foo&) = default;
+};
+
+}
+
+TEST_CASE("Deserialize object success", "[deserialize][success]") {
+    static_assert(jser::deserialize<Foo>("{\"name\": \"bar\", \"age\": 100}") == Foo{.age = 100, .name = "bar"});
+
+    struct Bar{};
+    REQUIRE_NOTHROW(jser::deserialize<Bar>("{}"));
+}
+
+TEST_CASE("Deserialize object failure", "[deserialize][failure]") {
+    REQUIRE_THROWS(jser::deserialize<Foo>("{}"));
+    REQUIRE_THROWS(jser::deserialize<Foo>("{\"name\": \"bar\", \"age\": 100, \"unknown\":5}"));
+
+    REQUIRE_THROWS(jser::deserialize<Foo>("{\"name\": \"bar\", \"age\": 100"));
+    REQUIRE_THROWS(jser::deserialize<Foo>("\"name\": \"bar\", \"age\": 100}"));
+    REQUIRE_THROWS(jser::deserialize<Foo>("{\"name\": \"bar\", \"age\": 100,}"));
+}

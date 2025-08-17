@@ -2,6 +2,8 @@
 
 - [x] (De)serialization of lists as range
 - [ ] (De)serialization of objects via uncustomizable reflection of structs
+    - [x] Reading
+    - [ ] Writing
 - [ ] Maybe deserialize_invoke, as preparation for (de)composition?
     - Simple, uncustomizable rules for now: single parameter = deserialize the type of the parameter. Multiple parameters = deserialize object with the corresponding fields.
 - [ ] Customization by (de)composition

@@ -2,6 +2,7 @@
 
 #include "readwrite/Basic.hpp"
 #include "readwrite/Range.hpp"
+#include "readwrite/Object.hpp"
 
 #include <iterator>
 #include <span>
